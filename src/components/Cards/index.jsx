@@ -7,6 +7,7 @@ import {
   ListItemAvatar,
   Avatar,
   Typography,
+  Link,
 } from "@material-ui/core";
 
 const Cards = ({ list }) => {
@@ -18,7 +19,7 @@ const Cards = ({ list }) => {
             <Avatar src={repo.organization.avatar_url} alt={repo.full_name} />
           </ListItemAvatar>
           <ListItemText
-            primary={repo.full_name}
+            primary={<Link href={repo.html_url}>{repo.full_name}</Link>}
             secondary={
               <React.Fragment>
                 <Typography
@@ -32,6 +33,7 @@ const Cards = ({ list }) => {
           />
         </ListItem>
       ))}
+      <Divider variant="inset" component="li" />
     </List>
   );
 };

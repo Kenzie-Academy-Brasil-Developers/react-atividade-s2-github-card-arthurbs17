@@ -16,19 +16,26 @@ const Form = () => {
   } = useForm({ resolver: yupResolver(schema) });
   const [error, setError] = useState(false);
   const [filterRepo, setFilterRepo] = useState([]);
+  const [showList, setShowList] = useState(false);
   const searchSubmit = (data) => {
+    console.log(data);
     fetch(`https://api.github.com/repos/${data.repo}`).then((response) =>
       response.json().then((response) => {
         if (response.message === "Not Found") {
           setError(true);
-        } else {
-          setFilterRepo([...filterRepo, response]);
+          return response.message;
+        }
+        const verify = filterRepo.find(
+          (repo) => repo.full_name === response.full_name
+        );
+        if (verify === undefined) {
+          setError(false);
+          return setFilterRepo([...filterRepo, response]);
         }
       })
     );
+    setShowList(true);
   };
-
-  console.log(filterRepo);
   return (
     <Grid container>
       <Grid>
@@ -39,9 +46,7 @@ const Form = () => {
         </form>
         {error && <p>Repositório inexistente</p>}
       </Grid>
-      <Grid>
-        <Cards list={filterRepo} />
-      </Grid>
+      <Grid>{showList && <Cards list={filterRepo} />}</Grid>
     </Grid>
   );
 };
