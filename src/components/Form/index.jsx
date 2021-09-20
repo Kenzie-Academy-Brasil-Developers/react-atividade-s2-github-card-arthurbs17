@@ -1,11 +1,29 @@
-import { Grid, Button, TextField } from "@material-ui/core";
+import { Grid, Button, TextField, Card, Paper } from "@material-ui/core";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
 import Cards from "../Cards";
+import { makeStyles } from "@material-ui/styles";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+  form: {
+    maxWidth: "700px",
+    marginTop: "30px",
+  },
+  error: {
+    color: "#8b0000",
+  },
+  list: {
+    maxWidth: "700px",
+  },
+}));
 
 const Form = () => {
+  const classes = useStyles();
   const schema = yup.object().shape({
     repo: yup.string().required("Campo Obrigatório"),
   });
@@ -36,17 +54,28 @@ const Form = () => {
     );
     setShowList(true);
   };
+  console.log(errors);
   return (
-    <Grid container>
-      <Grid>
-        <form onSubmit={handleSubmit(searchSubmit)}>
-          <TextField {...register("repo")} />
-          <Button type="submit">Enviar</Button>
-          {errors.repo?.message && <span>{errors.repo.message}</span>}
-        </form>
-        {error && <p>Repositório inexistente</p>}
+    <Grid
+      container
+      justifyContent="center"
+      spacing={3}
+      className={classes.root}
+    >
+      <Grid item xs={7} className={classes.form} align="center">
+        <Paper elevation={3}>
+          <form onSubmit={handleSubmit(searchSubmit)}>
+            <TextField {...register("repo")} required />
+            <Button type="submit" variant="outlined" size="small">
+              Enviar
+            </Button>
+          </form>
+          {error && <p className={classes.error}>Repositório inexistente</p>}
+        </Paper>
       </Grid>
-      <Grid>{showList && <Cards list={filterRepo} />}</Grid>
+      <Grid item xs={7} className={classes.list}>
+        <Paper elevation={3}>{showList && <Cards list={filterRepo} />}</Paper>
+      </Grid>
     </Grid>
   );
 };
